@@ -1,4 +1,4 @@
-# node-polyglot-middleware [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+# node-polyglot-middleware [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 > express middleware for node-polyglot (polyglot.js from airbnb)
 
 ## Installation
@@ -8,15 +8,37 @@ $ npm install --save node-polyglot-middleware
 ```
 
 ## Usage
-
+- node-polyglot prioritize options.phrases over options.getPhrases
+- do not provide static phrases if you want to fetch phrases dynamically
 ```js
-var nodePolyglotMiddleware = require('node-polyglot-middleware');
+var options = {
+    phrases: { // using static phrases
+        hello: 'Hello'
+    },
+    getPhrases(done) { // fetching phrases dynamically
+        request.get('http://example.com/api/to/retrieve/phrases').then((phrases) => {
+            return done(null, phrases);
+        }).catch((err) => {
+            return done(err);
+        });
+    }
+};
+var polyglot = require('node-polyglot-middleware')(options);
+var express = require('express');
+var app = express();
 
-nodePolyglotMiddleware('Rainbow');
+app.use(polyglot);
+
+// after polyglot middleware is specified,
+// you can use req.polyglot in the following middlewares and routers
+app.use(function(req, res, next) {
+    var hello = req.polyglot.t('hello');
+});
 ```
+
 ## License
 
-MIT © [Dongwon Lim]()
+MIT © [Dongwon Lim](idw111@gmail.com)
 
 
 [npm-image]: https://badge.fury.io/js/node-polyglot-middleware.svg
