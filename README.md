@@ -61,7 +61,7 @@ router.get('/message', function(req, res) {
 
 ## License
 
-MIT © [Dongwon Lim](idw111@gmail.com)
+MIT © [Dongwon Lim](LICENSE)
 
 
 [npm-image]: https://badge.fury.io/js/node-polyglot-middleware.svg
