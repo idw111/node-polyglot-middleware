@@ -11,6 +11,10 @@ $ npm install --save node-polyglot-middleware
 - node-polyglot prioritize options.phrases over options.getPhrases
 - do not provide static phrases if you want to fetch phrases dynamically
 ```js
+var polyglot = require('node-polyglot-middleware');
+var express = require('express');
+var app = express();
+
 var options = {
     phrases: { // using static phrases
         hello: 'Hello'
@@ -23,12 +27,21 @@ var options = {
         });
     }
 };
-var polyglot = require('node-polyglot-middleware')(options);
-var express = require('express');
-var app = express();
+app.use(polyglot(options));
+```
 
-app.use(polyglot);
+```js
+app.use(polyglot(), (req, res, next) => {
+    request.get('http://example.com/api/to/retrieve/phrases').then((phrases) => {
+        req.polyglot.extend(phrases);
+        return next();
+    }).catch((err) => {
+        return next(err);
+    });
+});
+```
 
+```js
 // after polyglot middleware is specified,
 // you can use req.polyglot in the following middlewares and routers
 app.use(function(req, res, next) {
